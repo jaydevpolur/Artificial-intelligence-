@@ -1,0 +1,57 @@
+# prompt: give pseudocode for the same
+
+FUNCTION simulated_annealing(n, initial_temperature, cooling_rate, iterations):
+  // Initialize the board with a random configuration
+  current_board = create_board(n)
+  current_conflicts = calculate_conflicts(current_board)
+  best_board = current_board // copy of current board
+  best_conflicts = current_conflicts
+
+  temperature = initial_temperature
+  FOR _ in range(iterations):
+    // Generate a neighboring state by changing the position of one queen
+    neighbor_board = generate_neighbor(current_board)
+    neighbor_conflicts = calculate_conflicts(neighbor_board)
+
+    delta_e = neighbor_conflicts - current_conflicts
+
+    // Metropolis acceptance criterion: accept the new state if it's better,
+    // or with a probability that decreases with temperature and the difference
+    // in conflicts
+    IF delta_e < 0 OR random_number(0, 1) < exp(-delta_e / temperature):
+      current_board = neighbor_board
+      current_conflicts = neighbor_conflicts
+
+    // Update the best solution if a better one is found
+    IF current_conflicts < best_conflicts:
+      best_board = current_board  // copy current_board to best_board
+      best_conflicts = current_conflicts
+
+    // Cool down the temperature
+    temperature = temperature * cooling_rate
+
+  RETURN best_board, best_conflicts
+
+
+FUNCTION create_board(n):
+  // Create a random board configuration with n queens
+  RETURN a list of n random integers between 0 and n-1 (inclusive)
+
+FUNCTION calculate_conflicts(board):
+  // Calculate the number of conflicts (attacking pairs) on the board
+  n = length of board
+  conflicts = 0
+  FOR each pair of queens (i, j) where i < j:
+    IF queens i and j are in the same row or diagonal:
+      conflicts = conflicts + 1
+  RETURN conflicts
+
+FUNCTION generate_neighbor(board):
+  // Generate a neighboring board by randomly moving one queen
+  n = length of board
+  neighbor = copy of board
+  // randomly choose a row
+  row_to_change = random integer between 0 and n-1
+  // place the queen at new column
+  neighbor[row_to_change] = random integer between 0 and n-1
+  RETURN neighbor
